@@ -27,6 +27,7 @@ required_libraries =
  Core
  IPO
  InstCombine
+ Canonicalization
  Linker
  MC
  ObjCARC
