@@ -110,7 +110,7 @@ namespace {
       (void) llvm::createIPSCCPPass();
       (void) llvm::createInductiveRangeCheckEliminationPass();
       (void) llvm::createIndVarSimplifyPass();
-      (void) llvm::createInstructionCombiningPass();
+      (void) llvm::createCanonicalizationLegacyPass();
       (void) llvm::createInternalizePass();
       (void) llvm::createLCSSAPass();
       (void) llvm::createLICMPass();

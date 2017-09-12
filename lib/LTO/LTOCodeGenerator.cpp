@@ -125,7 +125,8 @@ void LTOCodeGenerator::initializeLTOPasses() {
   initializeGlobalOptLegacyPassPass(R);
   initializeConstantMergeLegacyPassPass(R);
   initializeDAHPass(R);
-  initializeInstructionCombiningPassPass(R);
+  //  initializeInstructionCombiningPassPass(R);
+  initializeCanonicalizationLegacyPassPass(R);
   initializeSimpleInlinerPass(R);
   initializePruneEHPass(R);
   initializeGlobalDCELegacyPassPass(R);

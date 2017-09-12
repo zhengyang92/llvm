@@ -131,6 +131,7 @@ Pass *createIndVarSimplifyPass();
 //    %Z = add int 2, %X
 //
 FunctionPass *createInstructionCombiningPass(bool ExpensiveCombines = true);
+FunctionPass *createCanonicalizationLegacyPass();
 
 //===----------------------------------------------------------------------===//
 //

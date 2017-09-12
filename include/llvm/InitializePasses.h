@@ -37,6 +37,10 @@ void initializeVectorization(PassRegistry&);
 /// Initialize all passes linked into the InstCombine library.
 void initializeInstCombine(PassRegistry&);
 
+/// Initialize all passes linked into the Canonicalization library.
+void initializeCanonicalizationLegacy(PassRegistry&);
+
+
 /// Initialize all passes linked into the IPO library.
 void initializeIPO(PassRegistry&);
 
@@ -166,6 +170,7 @@ void initializeInstNamerPass(PassRegistry&);
 void initializeInstSimplifierPass(PassRegistry&);
 void initializeInstrProfilingLegacyPassPass(PassRegistry&);
 void initializeInstructionCombiningPassPass(PassRegistry&);
+void initializeCanonicalizationLegacyPassPass(PassRegistry&);
 void initializeInstructionSelectPass(PassRegistry&);
 void initializeInterleavedAccessPass(PassRegistry&);
 void initializeInternalizeLegacyPassPass(PassRegistry&);
