@@ -37,12 +37,14 @@ using namespace llvm;
 using namespace llvm::PatternMatch;
 
 Instruction *Canonicalizer::visitBinaryOperator(BinaryOperator &I) {
+  if(!I.isCommutative()) return nullptr;
   Value *Op0 = I.getOperand(0), *Op1 = I.getOperand(1);
   auto *Op0Const = dyn_cast<Constant>(Op0);
   auto *Op1Const = dyn_cast<Constant>(Op1);
   if (Op0Const && !Op1Const) {
-    std::swap(Op0, Op1);
+    return BinaryOperator::Create (I.getOpcode(), Op1, Op0);
   }
+
   return nullptr;
 }
 

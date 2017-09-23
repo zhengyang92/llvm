@@ -998,7 +998,7 @@ ModulePassManager PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level,
   MainFPM.addPass(CanonicalizationPass());
   MainFPM.addPass(SimplifyCFGPass());
   MainFPM.addPass(SCCPPass());
-  MainFPM.addPass(InstCombinePass());
+  MainFPM.addPass(CanonicalizationPass());
   //  MainFPM.addPass(InstCombinePass());
   MainFPM.addPass(BDCEPass());
 

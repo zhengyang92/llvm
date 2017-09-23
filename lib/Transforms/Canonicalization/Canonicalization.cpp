@@ -87,12 +87,13 @@ bool Canonicalizer::run() {
 
     // Check to see if we can DCE the instruction.
     if (isInstructionTriviallyDead(I, &TLI)) {
-      DEBUG(dbgs() << "IC: DCE: " << *I << '\n');
+      DEBUG(dbgs() << "CA: DCE: " << *I << '\n');
       eraseInstFromFunction(*I);
       ++NumDeadInst;
       MadeIRChange = true;
       continue;
     }
+    //    llvm::outs()<<"Helloworld";
 
     if (!DebugCounter::shouldExecute(VisitCounter))
       continue;
@@ -105,13 +106,13 @@ bool Canonicalizer::run() {
     std::string OrigI;
 #endif
     DEBUG(raw_string_ostream SS(OrigI); I->print(SS); OrigI = SS.str(););
-    DEBUG(dbgs() << "IC: Visiting: " << OrigI << '\n');
+    DEBUG(dbgs() << "CA: Visiting: " << OrigI << '\n');
 
     if (Instruction *Result = visit(*I)) {
       ++NumCanonicalized;
       // Should we replace the old instruction with a new one?
       if (Result != I) {
-        DEBUG(dbgs() << "IC: Old = " << *I << '\n'
+        DEBUG(dbgs() << "CA: Old = " << *I << '\n'
                      << "    New = " << *Result << '\n');
 
         if (I->getDebugLoc())
@@ -139,7 +140,7 @@ bool Canonicalizer::run() {
 
         eraseInstFromFunction(*I);
       } else {
-        DEBUG(dbgs() << "IC: Mod = " << OrigI << '\n'
+        DEBUG(dbgs() << "CA: Mod = " << OrigI << '\n'
                      << "    New = " << *I << '\n');
 
         // If the instruction was modified, it's possible that it is now dead.
@@ -156,6 +157,7 @@ bool Canonicalizer::run() {
   }
 
   Worklist.Zap();
+
   return MadeIRChange;
 }
 
@@ -192,7 +194,7 @@ static bool AddReachableCodeToWorklist(BasicBlock *BB, const DataLayout &DL,
       // DCE instruction if trivially dead.
       if (isInstructionTriviallyDead(Inst, TLI)) {
         ++NumDeadInst;
-        DEBUG(dbgs() << "IC: DCE: " << *Inst << '\n');
+        DEBUG(dbgs() << "CA: DCE: " << *Inst << '\n');
         Inst->eraseFromParent();
         MadeIRChange = true;
         continue;
@@ -302,7 +304,7 @@ static bool canonicalizationOverFunction(
     Canonicalizer C(Worklist, Builder, F.optForMinSize(), AA,
                    AC, TLI, DT, ORE, DL, LI);
 
-    if (C.run())
+    if (!C.run())
       break;
   }
 
