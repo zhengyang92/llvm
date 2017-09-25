@@ -6,7 +6,7 @@ set(LLVM_LINK_COMPONENTS
   Core
   IPO
   IRReader
-  InstCombine
+#  InstCombine
   Instrumentation
   Linker
   ObjCARCOpts

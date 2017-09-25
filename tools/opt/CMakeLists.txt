@@ -7,7 +7,7 @@ set(LLVM_LINK_COMPONENTS
   Coroutines
   IPO
   IRReader
-  InstCombine
+#  InstCombine
   Instrumentation
   MC
   ObjCARCOpts

@@ -26,7 +26,7 @@ required_libraries =
  CodeGen
  Core
  IPO
- InstCombine
+; InstCombine
  Linker
  MC
  ObjCARC

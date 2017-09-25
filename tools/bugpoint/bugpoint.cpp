@@ -131,7 +131,7 @@ int main(int argc, char **argv) {
   initializeIPO(Registry);
   initializeAnalysis(Registry);
   initializeTransformUtils(Registry);
-  initializeInstCombine(Registry);
+  //  initializeInstCombine(Registry);
   initializeInstrumentation(Registry);
   initializeTarget(Registry);
 

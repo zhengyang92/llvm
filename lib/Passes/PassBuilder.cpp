@@ -81,7 +81,7 @@
 #include "llvm/Transforms/IPO/SCCP.h"
 #include "llvm/Transforms/IPO/StripDeadPrototypes.h"
 #include "llvm/Transforms/IPO/WholeProgramDevirt.h"
-#include "llvm/Transforms/InstCombine/InstCombine.h"
+//#include "llvm/Transforms/InstCombine/InstCombine.h"
 #include "llvm/Transforms/InstrProfiling.h"
 #include "llvm/Transforms/PGOInstrumentation.h"
 #include "llvm/Transforms/SampleProfile.h"
@@ -354,7 +354,7 @@ PassBuilder::buildFunctionSimplificationPipeline(OptimizationLevel Level,
   FPM.addPass(JumpThreadingPass());
   FPM.addPass(CorrelatedValuePropagationPass());
   FPM.addPass(SimplifyCFGPass());
-  FPM.addPass(InstCombinePass());
+  //  FPM.addPass(InstCombinePass());
 
   if (!isOptimizingForSize(Level))
     FPM.addPass(LibCallsShrinkWrapPass());
@@ -403,7 +403,7 @@ PassBuilder::buildFunctionSimplificationPipeline(OptimizationLevel Level,
   FPM.addPass(RequireAnalysisPass<OptimizationRemarkEmitterAnalysis, Function>());
   FPM.addPass(createFunctionToLoopPassAdaptor(std::move(LPM1)));
   FPM.addPass(SimplifyCFGPass());
-  FPM.addPass(InstCombinePass());
+  //  FPM.addPass(InstCombinePass());
   FPM.addPass(createFunctionToLoopPassAdaptor(std::move(LPM2)));
 
   // Eliminate redundancies.
@@ -431,7 +431,7 @@ PassBuilder::buildFunctionSimplificationPipeline(OptimizationLevel Level,
 
   // Run instcombine after redundancy and dead bit elimination to exploit
   // opportunities opened up by them.
-  FPM.addPass(InstCombinePass());
+  //  FPM.addPass(InstCombinePass());
   invokePeepholeEPCallbacks(FPM, Level);
 
   // Re-consider control flow based optimizations after redundancy elimination,
@@ -448,7 +448,7 @@ PassBuilder::buildFunctionSimplificationPipeline(OptimizationLevel Level,
   // the simplifications and basic cleanup after all the simplifications.
   FPM.addPass(ADCEPass());
   FPM.addPass(SimplifyCFGPass());
-  FPM.addPass(InstCombinePass());
+  //  FPM.addPass(InstCombinePass());
   invokePeepholeEPCallbacks(FPM, Level);
 
   return FPM;
@@ -482,7 +482,7 @@ void PassBuilder::addPGOInstrPasses(ModulePassManager &MPM, bool DebugLogging,
     FPM.addPass(SROA());
     FPM.addPass(EarlyCSEPass());    // Catch trivial redundancies.
     FPM.addPass(SimplifyCFGPass()); // Merge & remove basic blocks.
-    FPM.addPass(InstCombinePass()); // Combine silly sequences.
+    //    FPM.addPass(InstCombinePass()); // Combine silly sequences.
     invokePeepholeEPCallbacks(FPM, Level);
 
     CGPipeline.addPass(createCGSCCToFunctionPassAdaptor(std::move(FPM)));
@@ -564,7 +564,7 @@ PassBuilder::buildModuleSimplificationPipeline(OptimizationLevel Level,
   // Create a small function pass pipeline to cleanup after all the global
   // optimizations.
   FunctionPassManager GlobalCleanupPM(DebugLogging);
-  GlobalCleanupPM.addPass(InstCombinePass());
+  //  GlobalCleanupPM.addPass(InstCombinePass());
   invokePeepholeEPCallbacks(GlobalCleanupPM, Level);
 
   GlobalCleanupPM.addPass(SimplifyCFGPass());
@@ -712,7 +712,7 @@ PassBuilder::buildModuleOptimizationPipeline(OptimizationLevel Level,
   OptimizePM.addPass(LoopLoadEliminationPass());
 
   // Cleanup after the loop optimization passes.
-  OptimizePM.addPass(InstCombinePass());
+  //  OptimizePM.addPass(InstCombinePass());
 
 
   // Now that we've formed fast to execute loop structures, we do further
@@ -724,7 +724,7 @@ PassBuilder::buildModuleOptimizationPipeline(OptimizationLevel Level,
 
   // Cleanup after all of the vectorizers.
   OptimizePM.addPass(SimplifyCFGPass());
-  OptimizePM.addPass(InstCombinePass());
+  //  OptimizePM.addPass(InstCombinePass());
 
   // Unroll small loops to hide loop backedge latency and saturate any parallel
   // execution resources of an out-of-order processor. We also then need to
@@ -733,7 +733,7 @@ PassBuilder::buildModuleOptimizationPipeline(OptimizationLevel Level,
   // combiner for cleanup here so that the unrolling and LICM can be pipelined
   // across the loop nests.
   OptimizePM.addPass(createFunctionToLoopPassAdaptor(LoopUnrollPass::create(Level)));
-  OptimizePM.addPass(InstCombinePass());
+  //  OptimizePM.addPass(InstCombinePass());
   OptimizePM.addPass(RequireAnalysisPass<OptimizationRemarkEmitterAnalysis, Function>());
   OptimizePM.addPass(createFunctionToLoopPassAdaptor(LICMPass()));
 
@@ -924,7 +924,7 @@ ModulePassManager PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level,
   // function pointers.  When this happens, we often have to resolve varargs
   // calls, etc, so let instcombine do this.
   FunctionPassManager PeepholeFPM(DebugLogging);
-  PeepholeFPM.addPass(InstCombinePass());
+  //  PeepholeFPM.addPass(InstCombinePass());
   invokePeepholeEPCallbacks(PeepholeFPM, Level);
 
   MPM.addPass(createModuleToFunctionPassAdaptor(std::move(PeepholeFPM)));
@@ -946,7 +946,7 @@ ModulePassManager PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level,
 
   FunctionPassManager FPM(DebugLogging);
   // The IPO Passes may leave cruft around. Clean up after them.
-  FPM.addPass(InstCombinePass());
+  //  FPM.addPass(InstCombinePass());
   invokePeepholeEPCallbacks(FPM, Level);
 
   FPM.addPass(JumpThreadingPass());
@@ -982,10 +982,10 @@ ModulePassManager PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level,
   // loopVectorize. Enable them once the remaining issue with LPM
   // are sorted out.
 
-  MainFPM.addPass(InstCombinePass());
+  //  MainFPM.addPass(InstCombinePass());
   MainFPM.addPass(SimplifyCFGPass());
   MainFPM.addPass(SCCPPass());
-  MainFPM.addPass(InstCombinePass());
+  //  MainFPM.addPass(InstCombinePass());
   MainFPM.addPass(BDCEPass());
 
   // FIXME: We may want to run SLPVectorizer here.
@@ -998,7 +998,7 @@ ModulePassManager PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level,
   // FIXME: Conditionally run LoadCombine here, after it's ported
   // (in case we still have this pass, given its questionable usefulness).
 
-  MainFPM.addPass(InstCombinePass());
+  //  MainFPM.addPass(InstCombinePass());
   invokePeepholeEPCallbacks(MainFPM, Level);
   MainFPM.addPass(JumpThreadingPass());
   MPM.addPass(createModuleToFunctionPassAdaptor(std::move(MainFPM)));
