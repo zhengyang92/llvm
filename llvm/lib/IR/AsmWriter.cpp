@@ -2845,7 +2845,7 @@ void AssemblyWriter::printModule(const Module *M) {
 
   if (ShouldPreserveUseListOrder)
     UseListOrders = predictUseListOrder(M);
-
+/*
   if (!M->getModuleIdentifier().empty() &&
       // Don't print the ID if it will start a new line (which would
       // require a comment char before it).
@@ -2880,6 +2880,7 @@ void AssemblyWriter::printModule(const Module *M) {
       Out << "\"\n";
     } while (!Asm.empty());
   }
+  */
 
   printTypeIdentities();
 
@@ -4036,7 +4037,7 @@ void AssemblyWriter::printBasicBlock(const BasicBlock *BB) {
     else
       Out << "<badref>:";
   }
-
+#if false
   if (!IsEntryBlock) {
     // Output predecessors for the block.
     Out.PadToColumn(50);
@@ -4054,6 +4055,7 @@ void AssemblyWriter::printBasicBlock(const BasicBlock *BB) {
       }
     }
   }
+#endif
 
   Out << "\n";
 

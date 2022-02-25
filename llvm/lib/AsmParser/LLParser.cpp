@@ -5972,7 +5972,8 @@ bool LLParser::parseConstantValue(Type *Ty, Constant *&C) {
   case ValID::t_Constant:
   case ValID::t_ConstantSplat:
   case ValID::t_ConstantStruct:
-  case ValID::t_PackedConstantStruct: {
+  case ValID::t_PackedConstantStruct:
+  case ValID::t_Zero: {
     Value *V;
     if (convertValIDToValue(Ty, ID, V, /*PFS=*/nullptr))
       return true;
