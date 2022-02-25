@@ -81,6 +81,7 @@
 #include "llvm/Transforms/Scalar/CallSiteSplitting.h"
 #include "llvm/Transforms/Scalar/ConstraintElimination.h"
 #include "llvm/Transforms/Scalar/CorrelatedValuePropagation.h"
+#include "llvm/Transforms/Scalar/DCE.h"
 #include "llvm/Transforms/Scalar/DFAJumpThreading.h"
 #include "llvm/Transforms/Scalar/DeadStoreElimination.h"
 #include "llvm/Transforms/Scalar/DivRemPairs.h"
@@ -353,6 +354,12 @@ void PassBuilder::invokePipelineEarlySimplificationEPCallbacks(
     ModulePassManager &MPM, OptimizationLevel Level) {
   for (auto &C : PipelineEarlySimplificationEPCallbacks)
     C(MPM, Level);
+}
+
+void PassBuilder::invokeVectorCombineCallbacks(FunctionPassManager &FPM,
+                                               OptimizationLevel Level) {
+  for (auto &C : VectorCombineCallBacks)
+    C(FPM, Level);
 }
 
 // Helper to add AnnotationRemarksPass.
@@ -1395,9 +1402,16 @@ PassBuilder::buildModuleOptimizationPipeline(OptimizationLevel Level,
   OptimizePM.addPass(
       SimplifyCFGPass(SimplifyCFGOptions().convertSwitchRangeToICmp(true)));
 
+  invokeVectorCombineCallbacks(OptimizePM, Level);
+
+  OptimizePM.addPass(InstCombinePass());
+  OptimizePM.addPass(DCEPass());
+  OptimizePM.addPass(SimplifyCFGPass());
+
   // Add the core optimizing pipeline.
   MPM.addPass(createModuleToFunctionPassAdaptor(std::move(OptimizePM),
                                                 PTO.EagerlyInvalidateAnalyses));
+  MPM.addPass(GlobalDCEPass());
 
   invokeOptimizerLastEPCallbacks(MPM, Level);
 
