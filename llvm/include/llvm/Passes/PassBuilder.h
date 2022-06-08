@@ -526,6 +526,11 @@ public:
   /// Print pass names.
   void printPassNames(raw_ostream &OS);
 
+
+  void registerVectorCombineCallback(
+      const std::function<void(FunctionPassManager &, OptimizationLevel)> &C) {
+    VectorCombineCallBacks.push_back(C);
+  }
   /// Register a callback for a default optimizer pipeline extension
   /// point
   ///
@@ -727,6 +732,9 @@ private:
   void addPGOInstrPasses(ModulePassManager &MPM, OptimizationLevel Level,
                          bool RunProfileGen, bool IsCS, std::string ProfileFile,
                          std::string ProfileRemappingFile);
+  void invokeVectorCombineCallbacks(FunctionPassManager &, OptimizationLevel);
+  SmallVector<std::function<void(FunctionPassManager &, OptimizationLevel)>, 2>
+      VectorCombineCallBacks;
   void invokePeepholeEPCallbacks(FunctionPassManager &, OptimizationLevel);
 
   // Extension Point callbacks

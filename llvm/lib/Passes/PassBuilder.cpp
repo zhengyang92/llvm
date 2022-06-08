@@ -517,6 +517,13 @@ void PassBuilder::registerLoopAnalyses(LoopAnalysisManager &LAM) {
     C(LAM);
 }
 
+
+void PassBuilder::invokeVectorCombineCallbacks(FunctionPassManager &FPM,
+                                               OptimizationLevel Level) {
+  for (auto &C : VectorCombineCallBacks)
+    C(FPM, Level);
+}
+
 // Helper to add AnnotationRemarksPass.
 static void addAnnotationRemarksPass(ModulePassManager &MPM) {
   FunctionPassManager FPM;
@@ -1286,6 +1293,7 @@ void PassBuilder::addVectorPasses(OptimizationLevel Level,
   }
   // Enhance/cleanup vector code.
   FPM.addPass(VectorCombinePass());
+  invokeVectorCombineCallbacks(FPM, Level);
 
   if (!IsFullLTO) {
     FPM.addPass(InstCombinePass());
